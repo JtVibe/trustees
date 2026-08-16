@@ -3,6 +3,7 @@
     "name": "trustees",
     "slug": "trustees",
     "version": "1.0.0",
+    "scheme": "trustees",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
