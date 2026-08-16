@@ -90,3 +90,9 @@ export const body = (fontSize: number): TextStyle => ({
   fontSize,
   lineHeight: Math.round(fontSize * LINE_HEIGHT_BODY),
 });
+
+/** A button label at a given size, already uppercase with the wide tracking. */
+export const buttonLabel = (fontSize: number): TextStyle => ({
+  ...typography.button,
+  fontSize,
+});
