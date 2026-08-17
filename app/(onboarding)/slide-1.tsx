@@ -9,6 +9,7 @@ import { useState } from 'react';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import type { OnboardingSlideProps } from '../../components/OnboardingSlide';
 import {
   alpha,
   body,
@@ -42,7 +43,11 @@ const HEADLINE_SIZE = 32;
 const COPY_SIZE = 15;
 const BUTTON_SIZE = 16;
 
-export default function Slide1Screen() {
+/**
+ * activeIndex and onNext come from the pager while swiping. On its own the first
+ * dot is lit and NEXT navigates to slide 2.
+ */
+export default function Slide1Screen({ activeIndex = SLIDE_INDEX, onNext }: OnboardingSlideProps) {
   const router = useRouter();
 
   // The real notch and gesture-bar sizes for this exact phone. Added as padding
@@ -90,7 +95,7 @@ export default function Slide1Screen() {
 
         <View style={styles.dots}>
           {Array.from({ length: SLIDE_COUNT }, (_, index) => (
-            <View key={index} style={[styles.dot, index !== SLIDE_INDEX && styles.dotInactive]} />
+            <View key={index} style={[styles.dot, index !== activeIndex && styles.dotInactive]} />
           ))}
         </View>
 
@@ -101,7 +106,7 @@ export default function Slide1Screen() {
             { marginBottom: insets.bottom + spacing.xl },
             pressed && styles.buttonPressed,
           ]}
-          onPress={() => router.push('/(onboarding)/slide-2')}
+          onPress={onNext ?? (() => router.push('/(onboarding)/slide-2'))}
         >
           <Text style={styles.buttonText}>Next</Text>
         </Pressable>

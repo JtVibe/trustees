@@ -1,9 +1,10 @@
 /**
- * Onboarding slide 2 — a split layout on the plain page colour: cut-out models
- * anchored bottom-right behind a left-hand column of headline, copy and four
- * feature rows, with the dots and NEXT button over a dark fade at the bottom.
+ * Onboarding slide 3 — the same split layout as slide 2 (cut-out models behind a
+ * left-hand column of headline, copy and four feature rows), ending in GET STARTED,
+ * which records that onboarding is done and sends the user to Login.
  */
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
@@ -26,19 +27,17 @@ import {
 } from '../../theme';
 
 /** require() (not a URL) so Metro bundles the image into the app. */
-const PHOTO = require('../../assets/onboarding/onboarding_02_models_trans.png');
-
-/** The photo's real shape, read from the file, so it can never stretch. */
-const photoSize = Image.resolveAssetSource(PHOTO);
-const PHOTO_ASPECT = photoSize.width / photoSize.height;
+const PHOTO = require('../../assets/onboarding/onboarding_03_models_trans.png');
 
 /** How many onboarding slides there are in total, and which one this file is. */
 const SLIDE_COUNT = 3;
-const SLIDE_INDEX = 1;
+const SLIDE_INDEX = 2;
+
+/** Must match HAS_ONBOARDED_KEY in app/index.tsx, which reads it on the splash. */
+const HAS_ONBOARDED_KEY = 'hasOnboarded';
 
 /** How the screen is split: text down the left, models down the right. */
 const COLUMN_WIDTH = '60%';
-const PHOTO_WIDTH = '55%';
 
 /** How far up the screen the bottom fade reaches. */
 const GRADIENT_HEIGHT = '20%';
@@ -52,42 +51,51 @@ const BUTTON_SIZE = 16;
 const FEATURES: { icon: FeatureIconName; title: string; description: string }[] = [
   {
     icon: 'sparkles-outline',
-    title: 'Curated Collections',
-    description: 'Modern styles for every occasion.',
-  },
-  {
-    icon: 'ribbon-outline',
-    title: 'Premium Quality',
-    description: 'Carefully crafted for comfort and durability.',
-  },
-  {
-    icon: 'bag-handle-outline',
-    title: 'Seamless Shopping',
-    description: 'A smooth experience from browse to buy.',
+    title: 'New Arrivals Every Week',
+    description: 'Stay fresh with the latest trends.',
   },
   {
     icon: 'heart-outline',
-    title: 'Made for You',
-    description: 'Style that complements your lifestyle.',
+    title: "Pieces You'll Love",
+    description: "Handpicked styles you'll reach for again and again.",
+  },
+  {
+    icon: 'shield-checkmark-outline',
+    title: 'Secure & Easy',
+    description: 'Safe checkout and multiple payment options.',
+  },
+  {
+    icon: 'cube-outline',
+    title: 'Delivered to You',
+    description: 'Fast, reliable delivery right to your door.',
   },
 ];
 
-/**
- * activeIndex and onNext come from the pager while swiping. On its own the second
- * dot is lit and NEXT navigates to slide 3.
- */
-export default function Slide2Screen({ activeIndex = SLIDE_INDEX, onNext }: OnboardingSlideProps) {
+/** activeIndex comes from the pager while swiping; on its own the third dot is lit. */
+export default function Slide3Screen({ activeIndex = SLIDE_INDEX }: OnboardingSlideProps) {
   const router = useRouter();
 
   // The real notch and gesture-bar sizes for this exact phone. Added as padding
   // rather than wrapping in <SafeAreaView>, so the fade still runs edge to edge.
   const insets = useSafeAreaInsets();
 
+  /** Remembers that onboarding is finished, then leaves for Login. */
+  const finish = async () => {
+    try {
+      await AsyncStorage.setItem(HAS_ONBOARDED_KEY, 'true');
+    } catch {
+      // A write failure only means onboarding shows again next launch — safe.
+    }
+
+    // replace() so the back gesture can't return into onboarding.
+    router.replace('/(auth)/login');
+  };
+
   return (
     <View style={styles.screen}>
       {/*
         Layer 1: the models. Absolute and declared first, so it sits behind the
-        text; pinned to the bottom-right corner and sized to a share of the screen
+        text; pinned to the bottom of the screen and sized to a share of the screen
         width, with the height following from the photo's own shape.
       */}
       <View style={styles.photoLayer} pointerEvents="none">
@@ -104,10 +112,10 @@ export default function Slide2Screen({ activeIndex = SLIDE_INDEX, onNext }: Onbo
       </View>
 
       <View style={styles.column}>
-        <Text style={styles.headline}>{'Designed for\nhow you live.'}</Text>
+        <Text style={styles.headline}>{'Style made\njust for you.'}</Text>
 
         <Text style={styles.copy}>
-          Quality pieces. Modern fits. Effortless style. Shop with ease, anytime, anywhere.
+          Timeless fashion for every moment. Look good, feel confident, wherever you go.
         </Text>
 
         <View style={styles.features}>
@@ -133,9 +141,9 @@ export default function Slide2Screen({ activeIndex = SLIDE_INDEX, onNext }: Onbo
         <Pressable
           accessibilityRole="button"
           style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}
-          onPress={onNext ?? (() => router.push('/(onboarding)/slide-3'))}
+          onPress={finish}
         >
-          <Text style={styles.buttonText}>Next</Text>
+          <Text style={styles.buttonText}>Get started</Text>
         </Pressable>
       </View>
     </View>
@@ -156,6 +164,7 @@ const styles = StyleSheet.create({
   photo: {
     width: 600,
     height: 600,
+    marginLeft: 28,
   },
   gradient: {
     position: 'absolute',
@@ -192,7 +201,7 @@ const styles = StyleSheet.create({
   },
   copy: {
     ...body(COPY_SIZE),
-    marginTop: -20,
+    marginTop: spacing.md,
   },
   features: {
     marginTop: 0,

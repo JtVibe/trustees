@@ -49,9 +49,10 @@ export default function SplashScreen() {
         return;
       }
 
-      // replace() so the back gesture can't return to the splash.
-      router.replace('/(onboarding)/slide-1');
-      // router.replace(hasOnboarded ? '/(tabs)/home' : '/(onboarding)/slide-1');
+      // replace() so the back gesture can't return to the splash. The target is
+      // the pager, which holds all three slides, not slide 1 on its own.
+      router.replace('/(onboarding)');
+      // router.replace(hasOnboarded ? '/(tabs)/home' : '/(onboarding)');
     }, SPLASH_DURATION_MS);
 
     return () => {
