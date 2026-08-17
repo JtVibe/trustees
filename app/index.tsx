@@ -50,7 +50,8 @@ export default function SplashScreen() {
       }
 
       // replace() so the back gesture can't return to the splash.
-      router.replace(hasOnboarded ? '/(tabs)/home' : '/(onboarding)/slide-1');
+      router.replace('/(onboarding)/slide-1');
+      // router.replace(hasOnboarded ? '/(tabs)/home' : '/(onboarding)/slide-1');
     }, SPLASH_DURATION_MS);
 
     return () => {

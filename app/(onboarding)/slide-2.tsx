@@ -149,10 +149,8 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   photo: {
-    width: 580,
-    height: 580,
-    marginLeft: 100,
-    marginBottom: 15,
+    width: 600,
+    height: 600,
   },
   gradient: {
     position: 'absolute',
