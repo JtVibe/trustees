@@ -19,6 +19,12 @@ export const colors = {
   border: '#E2E2E2',
   /** Search bar and input fills */
   fieldFill: '#F1F0F0',
+  /**
+   * Form validation messages ONLY. The design system is monochrome, but an error
+   * has to read as an error, so it borrows the sales red rather than inventing a
+   * second one. Never use this as decoration.
+   */
+  error: '#CB3430',
   /** Offers tile ONLY — the app is otherwise monochrome */
   offers: '#6160BB',
   /** Sales tile ONLY — the app is otherwise monochrome */
